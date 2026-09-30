@@ -1,2 +1,35 @@
-# Identify Operations
+# SV&V Lab Task 5 - Complete Operation Schema
 
+## Smart Museum Artifact Conservation System
+
+| ID | Precondition | Events/Input | Post-Conditions |
+|---|---|---|---|
+| O1 | The chamber controller has started and diagnostic interfaces are available. | Power-on event; sensor list; actuator list; calibration data; device communication status. | A self-check result is recorded for every essential sensor and environmental-control device. Normal conservation remains disabled if any essential device fails. |
+| O2 | O1 is complete and every essential device has a diagnostic result. | Self-check report; list of essential devices; device readiness criteria. | A readiness decision is produced. Normal conservation is permitted only when all essential devices pass. |
+| O3 | Essential sensors are ready and monitoring configuration is available. | Successful readiness result; sampling schedule; sensor configuration; chamber ID. | Continuous environmental monitoring, timestamping, health tracking, and data storage are active. |
+| O4 | Monitoring is active and an artifact has been placed inside the chamber. | Artifact ID; catalog information; operator ID; placement time; chamber ID. | A validated artifact record is created and linked to the active chamber session. |
+| O5 | A valid artifact record exists and its conservation profile can be retrieved. | Artifact environmental limits; temperature range; humidity range; light limit; vibration limit; recovery rules. | The complete environmental profile is validated and loaded for compliance decisions. |
+| O6 | Monitoring is active; an artifact is registered; the profile is loaded; required sensors are ready. | Door-closed event; profile-loaded event; artifact presence; sensor status. | Conservation start is authorized only when all conditions pass. If the door is open or a requirement is missing, normal conservation stays blocked. |
+| O7 | Monitoring service is active and configured sensor channels are available. | Scheduled sampling event or safety request; temperature; humidity; light; vibration; door; artifact condition; power readings. | A validated and timestamped chamber-condition sample is stored for later decisions. |
+| O8 | An artifact profile and a current chamber-condition sample are available. | New sensor sample; permitted ranges and thresholds; artifact profile. | Each monitored factor is classified as within limit, outside limit, or indeterminate, enabling the correct response. |
+| O9 | The temperature sensor is trusted, a valid profile is loaded, and temperature control is available. | Temperature-out-of-range event; measured temperature; target range; actuator status; recovery period. | A bounded temperature-correction command is recorded and a recovery deadline is started. Recovery is not assumed yet. |
+| O10 | The humidity sensor is trusted, a valid profile is loaded, and humidity control is available. | Humidity-out-of-range event; measured humidity; target range; actuator status; recovery period. | A bounded humidity-correction command is recorded and a recovery deadline is started. Recovery is not assumed yet. |
+| O11 | A correction command has been issued and fresh sensor readings can be obtained. | New temperature or humidity reading; correction command ID; target range; recovery deadline. | Recovery is marked successful only when readings verify that the condition is within the permitted range. Otherwise a failed-recovery result is produced. |
+| O12 | O11 reports failed recovery or another critical condition requires immediate protection. | Recovery-timeout event; failed-recovery result; current measurements; artifact limits; protection capabilities. | Normal conservation priorities are suspended and a protection response is activated. |
+| O13 | Protection response is active and control devices have been assessed. | Protection-control request; current light and environmental readings; available auxiliary controls; artifact limits. | Light exposure is reduced and available additional controls are activated within safe device limits. |
+| O14 | A protection event, serious fault, or operator-attention condition has been detected. | Alert severity; cause; chamber ID; artifact ID; measurements; timestamp; recommended action. | A persistent alert is generated and delivered or queued for the museum operator. Delivery failure is recorded without disabling protection. |
+| O15 | An artifact is registered and the vibration sensor is healthy. | Vibration reading above the permitted threshold; artifact ID; current chamber activity. | The vibration hazard is recorded and activities that could increase risk are suspended. |
+| O16 | Vibration response is active and the vibration sensor remains trustworthy. | Vibration-below-threshold event; continuous vibration readings; stabilization-period requirement. | Stabilization succeeds only when vibration stays below the threshold for the complete required period. Otherwise the timer is reset or the response continues. |
+| O17 | An artifact is inside the chamber, conservation is active, and the door sensor is available. | Door-open event; current conservation activities; active control commands; artifact ID. | Normal conservation and environmental activities are immediately suspended while the chamber is open. |
+| O18 | The door reports closed after an interruption and monitoring is available. | Door-closed event; artifact-condition reading; environmental readings; sensor-health status; active profile. | Conservation resumes only if environmental conditions, artifact condition, sensors, and protection status are safe. Otherwise suspension continues. |
+| O19 | Power monitoring is active and emergency-power availability can be checked. | Primary-power-loss event; emergency-power status; backup capacity; active operation. | The system transfers to verified emergency power when available. If unavailable, safe shutdown is initiated and normal conservation is not continued. |
+| O20 | A power-loss or shutdown event has occurred and incident storage is available or can queue records. | Power timestamps; power-source status; active artifact; chamber conditions; system response. | A durable time-stamped power incident record is created for audit and operator review. |
+| O21 | An artifact is registered and current chamber, sensor, and protection information is available. | Artifact-removal request; door status; environmental compliance; artifact condition; sensor health; protection status. | Removal is authorized only when the chamber is safe and no protection response is active. Otherwise removal is denied with recorded reasons. |
+
+## Schema Rules
+
+- A correction command does not prove recovery; O11 must verify the result through sensor readings.
+- Closing the chamber door does not automatically resume conservation; O18 must approve resumption.
+- Vibration stopping does not immediately restore normal operation; O16 must verify stabilization.
+- Emergency power must be verified before normal conservation continues.
+- Artifact removal is denied whenever the chamber is unsafe or an active protection response is underway.
