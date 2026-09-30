@@ -1,5 +1,5 @@
 Idenfied precondition events input post condition
-# Smart Museum Artifact Conservation System — Task 1
+# Smart Museum Artifact Conservation System Task 1
 
 | OP ID | Operations | Purpose |
 |---|---|---|
