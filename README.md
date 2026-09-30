@@ -1,6 +1,4 @@
-# Smart Museum Artifact Conservation System
-
-## Overview
+# Museum Artifact Conservation System
 
 The Smart Museum Artifact Conservation System protects valuable historical artifacts by monitoring and controlling the environment inside a conservation chamber.
 
